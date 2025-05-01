@@ -36,7 +36,13 @@ class Win(QMainWindow, Ui_MainWindow):
         self.pushButton_4.clicked.connect(self.paste_)
         self.pushButton_11.clicked.connect(lambda: self.write_(va=0))
         self.pushButton_12.clicked.connect(lambda: self.write_(va=1))
-        self.pushButton_13.clicked.connect(lambda: self.write_(va=2))
+        self.pushButton_15.clicked.connect(lambda: self.write_(va=2))
+        self.pushButton_14.clicked.connect(lambda: self.write_(va=3))
+        self.pushButton_16.clicked.connect(lambda: self.write_(va=4))
+        self.pushButton_13.clicked.connect(lambda: self.write_(va=5))
+        self.pushButton_17.clicked.connect(lambda: self.write_(va=6))
+        self.pushButton_19.clicked.connect(lambda: self.write_(va=7))
+        self.pushButton_18.clicked.connect(lambda: self.write_(va=9))
 
         # 快捷键
         self.actionopen.setShortcut('ctrl+o')
@@ -55,7 +61,13 @@ class Win(QMainWindow, Ui_MainWindow):
         self.pushButton_10.setShortcut('c')
         self.pushButton_11.setShortcut('0')
         self.pushButton_12.setShortcut('1')
+        self.pushButton_15.setShortcut('2')
+        self.pushButton_14.setShortcut('3')
+        self.pushButton_16.setShortcut('4')
         self.pushButton_13.setShortcut('5')
+        self.pushButton_17.setShortcut('6')
+        self.pushButton_19.setShortcut('7')
+        self.pushButton_18.setShortcut('9')
 
     def open2_(self):
         url = self.url
@@ -126,7 +138,7 @@ class Win(QMainWindow, Ui_MainWindow):
         写入选中行
         :param cd: -25%
         :param ch: AbilityChargeRestoreTime
-        :param va: =0, =1, +50
+        :param va: =0, =1, +25%, +33%, +5, +50, +500,
         :return:
         """
         m, i, t = self.read_()  # 模型，行索引，行内容
@@ -142,6 +154,7 @@ class Win(QMainWindow, Ui_MainWindow):
                         x = update_value(x)
                     else:
                         x = update_value_more(x)
+
                     if cd == 1 or 'Cooldown' in x or 'ManaCost' in x or 'CastPoint' in x or 'RestoreTime' in x:
                         x = x.replace('+50%', '-25%')
                     elif va == 0:
@@ -149,9 +162,23 @@ class Win(QMainWindow, Ui_MainWindow):
                     elif va == 1:
                         x = x.replace('+50%', '=1')
                     elif va == 2:
+                        x = x.replace('+50%', '+25%')
+                    elif va == 3:
+                        x = x.replace('+50%', '+33%')
+                    elif va == 4:
                         x = x.replace('+50%', '+5')
+                    elif va == 5:
+                        x = x.replace('+50%', '+50')
+                    elif va == 6:
+                        x = x.replace('+50%', '+500')
+                    elif va == 7:
+                        x = x.replace('+50%', '+75%')
+                    elif va == 9:
+                        x = x.replace('+50%', '+100%')
 
-                        # 开始写入
+
+
+                # 开始写入
                 m.setData(i, x)  # 写
                 self.undo_board = f'{t}'  # 备份原字段
             except Exception as e:
