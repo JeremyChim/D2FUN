@@ -34,7 +34,6 @@ class Win(QMainWindow, Ui_MainWindow):
         self.pushButton_6.clicked.connect(self.undo_)
         self.pushButton_5.clicked.connect(self.cut_)
         self.pushButton_4.clicked.connect(self.paste_)
-        self.pushButton_11.clicked.connect(lambda: self.write_(va=0))
         self.pushButton_12.clicked.connect(lambda: self.write_(va=1))
         self.pushButton_15.clicked.connect(lambda: self.write_(va=2))
         self.pushButton_14.clicked.connect(lambda: self.write_(va=3))
@@ -43,6 +42,9 @@ class Win(QMainWindow, Ui_MainWindow):
         self.pushButton_17.clicked.connect(lambda: self.write_(va=6))
         self.pushButton_19.clicked.connect(lambda: self.write_(va=7))
         self.pushButton_18.clicked.connect(lambda: self.write_(va=9))
+        self.pushButton_11.clicked.connect(lambda: self.write_(va=0))
+        self.pushButton_20.clicked.connect(lambda: self.write_(va=11))
+        self.pushButton_21.clicked.connect(lambda: self.write_(va=12))
 
         # 快捷键
         self.actionopen.setShortcut('ctrl+o')
@@ -59,7 +61,6 @@ class Win(QMainWindow, Ui_MainWindow):
         self.pushButton_4.setShortcut('v')
         self.pushButton_2.setShortcut('r')
         self.pushButton_10.setShortcut('c')
-        self.pushButton_11.setShortcut('0')
         self.pushButton_12.setShortcut('1')
         self.pushButton_15.setShortcut('2')
         self.pushButton_14.setShortcut('3')
@@ -68,6 +69,9 @@ class Win(QMainWindow, Ui_MainWindow):
         self.pushButton_17.setShortcut('6')
         self.pushButton_19.setShortcut('7')
         self.pushButton_18.setShortcut('9')
+        self.pushButton_11.setShortcut('0')
+        self.pushButton_20.setShortcut('-')
+        self.pushButton_21.setShortcut('=')
 
     def open2_(self):
         url = self.url
@@ -138,7 +142,7 @@ class Win(QMainWindow, Ui_MainWindow):
         写入选中行
         :param cd: -25%
         :param ch: AbilityChargeRestoreTime
-        :param va: =0, =1, +25%, +33%, +5, +50, +500,
+        :param va: =0, =1, +25%, +33%, +5, +50, +500, +75%, +100%
         :return:
         """
         m, i, t = self.read_()  # 模型，行索引，行内容
@@ -157,8 +161,6 @@ class Win(QMainWindow, Ui_MainWindow):
 
                     if cd == 1 or 'Cooldown' in x or 'ManaCost' in x or 'CastPoint' in x or 'RestoreTime' in x:
                         x = x.replace('+50%', '-25%')
-                    elif va == 0:
-                        x = x.replace('+50%', '=0')
                     elif va == 1:
                         x = x.replace('+50%', '=1')
                     elif va == 2:
@@ -175,8 +177,12 @@ class Win(QMainWindow, Ui_MainWindow):
                         x = x.replace('+50%', '+75%')
                     elif va == 9:
                         x = x.replace('+50%', '+100%')
-
-
+                    elif va == 0:
+                        x = x.replace('+50%', '=0')
+                    elif va == 11:
+                        x = x.replace('+', '-')
+                    elif va == 12:
+                        x = x.replace('-', '+')
 
                 # 开始写入
                 m.setData(i, x)  # 写
