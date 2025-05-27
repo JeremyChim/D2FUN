@@ -184,7 +184,7 @@ class Editor(QMainWindow, Ui_MainWindow):
                     if cd == 1 or 'Cooldown' in x or 'ManaCost' in x or 'CastPoint' in x or 'RestoreTime' in x:
                         x = x.replace('+50%', '-25%')
                     elif va == 1:
-                        x = x.replace('+50%', '=1')
+                        x = x.replace('+50%', '+1')
                     elif va == 2:
                         x = x.replace('+50%', '+25%')
                     elif va == 3:
@@ -202,9 +202,9 @@ class Editor(QMainWindow, Ui_MainWindow):
                     elif va == 0:
                         x = x.replace('+50%', '=0')
                     elif va == 11:
-                        x = x.replace('+', '-')
+                        x = x.replace('+50%', '-1')
                     elif va == 12:
-                        x = x.replace('-', '+')
+                        x = x.replace('+50%', '=1')
 
                 # 开始写入
                 m.setData(i, x)  # 写
