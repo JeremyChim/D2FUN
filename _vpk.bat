@@ -24,5 +24,6 @@ if exist %source% (
 
 timeout 1
 
+echo sv_cheats 1; script_reload_code bots/fretbots | clip
 :: start "" "E:\GAME\steamapps\common\dota 2 beta\game\bin\win64\dota2.exe"
 :: start "" "E:\GAME\steamapps\common\Lossless Scaling\LosslessScaling.exe"
