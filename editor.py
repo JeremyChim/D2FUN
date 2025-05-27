@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt5.QtCore import QStringListModel, Qt
 from PyQt5.QtGui import QFont
 
-from script.ability_script import update_charge_restore, update_value_more, update_value
+from script.ability_script import update_charge_restore, update_value_more, update_value, expand_per
 from script.tab_script import tab_up, tab_down
 from ui.editor import Ui_MainWindow
 
@@ -14,19 +14,18 @@ class Editor(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.setWindowTitle('Edited')
-        self.init()
-        self.url = url
-        self.file_name = ''
-        self.undo_board = ''
-        self.clip_board = []
-        if self.url:
+        self.__init()
+        self.__url = url
+        self.__file_name = ''
+        self.__undo_board = ''
+        self.__clip_board = []
+        if self.__url:
             self.__load_the_file(reload=True)
 
-    def init(self):
-
+    def __init(self):
         # font = QFont("Consolas", 10)
         font = QFont("JetBrains Mono", 9)
-        font.setBold(True)    # 设置为粗体
+        font.setBold(True)  # 设置为粗体
         # font.setItalic(True)  # 设置为斜体
         self.listView.setFont(font)
         # act
@@ -86,7 +85,7 @@ class Editor(QMainWindow, Ui_MainWindow):
 
     def __open_the_file(self):
         # url = self.url
-        url = os.path.abspath(self.url)
+        url = os.path.abspath(self.__url)
         try:
             os.startfile(url)
             self.statusbar.showMessage(f"已成功打开文件: {url}")
@@ -97,7 +96,7 @@ class Editor(QMainWindow, Ui_MainWindow):
 
     def __load_the_file(self, reload=False):
         if reload:
-            url = self.url
+            url = self.__url
         else:
             url, _ = QFileDialog.getOpenFileName(self, "选择文件", "", "文本文件 (*.txt);;所有文件 (*)")  # 打开文件管理器
 
@@ -107,8 +106,8 @@ class Editor(QMainWindow, Ui_MainWindow):
             m = QStringListModel()  # 建立模型
             m.setStringList(ls)  # 写入内容至模型
             self.listView.setModel(m)  # lv绑定模型
-            self.file_name = url.split('/')[-1]  # 记忆文件名
-            self.url = url  # 记忆路径
+            self.__file_name = url.split('/')[-1]  # 记忆文件名
+            self.__url = url  # 记忆路径
             self.statusbar.showMessage(f'操作：载入数据成功，路径：{url}')
         else:
             self.statusbar.showMessage(f'操作：载入数据路径为空！')
@@ -130,8 +129,8 @@ class Editor(QMainWindow, Ui_MainWindow):
             m.setStringList(ls)  # 写入内容至模型
             self.listView.setModel(m)  # lv绑定模型
             self.listView.setStyleSheet("font-family: Consolas; font-size: 12px; font-weight: bold;")
-            self.file_name = url.split('/')[-1]  # 记忆文件名
-            self.url = url  # 记忆路径
+            self.__file_name = url.split('/')[-1]  # 记忆文件名
+            self.__url = url  # 记忆路径
             self.statusbar.showMessage(f'操作：载入数据成功，路径：{url}')
 
     def __read_select_line(self):
@@ -164,7 +163,7 @@ class Editor(QMainWindow, Ui_MainWindow):
         写入选中行
         :param cd: -25%
         :param ch: AbilityChargeRestoreTime
-        :param va: =0, =1, +25%, +33%, +5, +50, +500, +75%, +100%
+        :param va: =0, +1, +25%, +33%, +5, +50, +500, +75%, +100%
         :return:
         """
         m, i, t = self.__read_select_line()  # 模型，行索引，行内容
@@ -182,42 +181,42 @@ class Editor(QMainWindow, Ui_MainWindow):
                         x = update_value_more(x)
 
                     if cd == 1 or 'Cooldown' in x or 'ManaCost' in x or 'CastPoint' in x or 'RestoreTime' in x:
-                        x = x.replace('+50%', '-25%')
+                        x = x.replace(expand_per, '-25%')
                     elif va == 1:
-                        x = x.replace('+50%', '+1')
+                        x = x.replace(expand_per, '+1')
                     elif va == 2:
-                        x = x.replace('+50%', '+25%')
+                        x = x.replace(expand_per, '+25%')
                     elif va == 3:
-                        x = x.replace('+50%', '+33%')
+                        x = x.replace(expand_per, '+33%')
                     elif va == 4:
-                        x = x.replace('+50%', '+5')
+                        x = x.replace(expand_per, '+5')
                     elif va == 5:
-                        x = x.replace('+50%', '+50')
+                        x = x.replace(expand_per, '+50')
                     elif va == 6:
-                        x = x.replace('+50%', '+500')
+                        x = x.replace(expand_per, '+500')
                     elif va == 7:
-                        x = x.replace('+50%', '+75%')
+                        x = x.replace(expand_per, '+75%')
                     elif va == 9:
-                        x = x.replace('+50%', '+100%')
+                        x = x.replace(expand_per, '+100%')
                     elif va == 0:
-                        x = x.replace('+50%', '=0')
+                        x = x.replace(expand_per, '=0')
                     elif va == 11:
-                        x = x.replace('+50%', '-1')
+                        x = x.replace(expand_per, '-1')
                     elif va == 12:
-                        x = x.replace('+50%', '=1')
+                        x = x.replace(expand_per, '=1')
 
                 # 开始写入
                 m.setData(i, x)  # 写
-                self.undo_board = f'{t}'  # 备份原字段
+                self.__undo_board = f'{t}'  # 备份原字段
             except Exception as e:
                 self.statusbar.showMessage(f'操作：写入模型失败，错误：{e}')
 
     def __save(self, save_as=False):
         """保存文件"""
         if save_as:
-            url, _ = QFileDialog.getSaveFileName(self, "保存文件", self.file_name, "文本文件 (*.txt);;所有文件 (*)")
+            url, _ = QFileDialog.getSaveFileName(self, "保存文件", self.__file_name, "文本文件 (*.txt);;所有文件 (*)")
         else:
-            url = self.url
+            url = self.__url
 
         try:
             if url:
@@ -233,7 +232,7 @@ class Editor(QMainWindow, Ui_MainWindow):
                         tx = m.data(i, Qt.DisplayRole)  # 内容，显式指定角色 QT5
                         ls.append(tx)  # 写入列表
                     f.writelines(ls)  # 写
-                self.url = url
+                self.__url = url
                 self.statusbar.showMessage(f'操作：保存数据成功，路径：{url}')
         except Exception as e:
             print(e)
@@ -254,8 +253,8 @@ class Editor(QMainWindow, Ui_MainWindow):
     def __undo(self):
         """撤回"""
         m, i, t = self.__read_select_line()
-        if self.undo_board:
-            m.setData(i, self.undo_board)  # 写
+        if self.__undo_board:
+            m.setData(i, self.__undo_board)  # 写
             self.statusbar.showMessage(f'操作：撤回成功')
 
     def __cut(self):
@@ -264,21 +263,21 @@ class Editor(QMainWindow, Ui_MainWindow):
         if not t:
             self.statusbar.showMessage(f'操作：剪切失败，错误：内容为空')
         else:
-            self.clip_board.append(tab_up(t))  # 剪切
+            self.__clip_board.append(tab_up(t))  # 剪切
             m.setData(i, '')  # 删
-            self.statusbar.showMessage(f'操作：剪切成功，剪切板次数：{len(self.clip_board)}')
+            self.statusbar.showMessage(f'操作：剪切成功，剪切板次数：{len(self.__clip_board)}')
 
     def __paste(self):
         """粘贴"""
-        if not self.clip_board:
+        if not self.__clip_board:
             self.statusbar.showMessage(f'操作：粘贴失败，剪切板为空')
         else:
             m, i, t = self.__read_select_line()
             if not i:
                 self.statusbar.showMessage(f'操作：粘贴失败，错误：索引值为空')
             else:
-                m.setData(i, t + '\n'.join(self.clip_board))  # 写
-                self.clip_board = []  # 清空剪切板
+                m.setData(i, t + '\n'.join(self.__clip_board))  # 写
+                self.__clip_board = []  # 清空剪切板
                 self.statusbar.showMessage(f'操作：粘贴成功')
 
 
