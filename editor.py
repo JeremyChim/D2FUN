@@ -2,6 +2,7 @@ import os
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt5.QtCore import QStringListModel, Qt
+from PyQt5.QtGui import QFont
 
 from script.ability_script import update_charge_restore, update_value_more, update_value
 from script.tab_script import tab_up, tab_down
@@ -22,6 +23,12 @@ class Editor(QMainWindow, Ui_MainWindow):
             self.__load_the_file(reload=True)
 
     def init(self):
+
+        # font = QFont("Consolas", 10)
+        font = QFont("JetBrains Mono", 9)
+        font.setBold(True)    # 设置为粗体
+        # font.setItalic(True)  # 设置为斜体
+        self.listView.setFont(font)
         # act
         self.actionopen.triggered.connect(self.__load_the_file)
         self.actionopen_now.triggered.connect(self.__open_the_file)
