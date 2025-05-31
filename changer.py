@@ -14,6 +14,10 @@ class Changer:
         self.__change_neutral_items()
         self.__save_file('neutral_items.txt')
 
+        self.__read_file('items.txt')
+        self.__change_items()
+        self.__save_file('items.txt')
+
     def __read_file(self, file_name: str):
         with open(rf'{self.file_path}/{file_name}', 'r') as f:
             self.cache = f.readlines()
@@ -87,6 +91,19 @@ class Changer:
             else:
                 i = i
             ls2.append(i)
+        self.cache = ls2
+
+    def __change_items(self):
+        # Hand of Midas
+        ls2 = []
+        for i, x in enumerate(self.cache):
+            if i  == 3574:
+                x = x.replace('2.1', '5')
+                print(x)
+            elif i == 3575:
+                x = x.replace('160', '1000')
+                print(x)
+            ls2.append(x)
         self.cache = ls2
 
 
