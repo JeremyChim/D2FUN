@@ -115,10 +115,10 @@ class Changer:
         # Hand of Midas
         ls2 = []
         for x, i in enumerate(self.cache, 1):
-            if x == 3574:
+            if x == 3575:
                 i = i.replace('2.1', '5')
                 print(x, i, end='')
-            elif x == 3575:
+            elif x == 3576:
                 i = i.replace('160', '1000')
                 print(x, i, end='')
             ls2.append(i)
