@@ -7,7 +7,7 @@ class Changer:
     def change(self):
         self.__read_file('npc_units.txt')
         # self.__change_tower_hp(2)
-        self.__change_xp_gold(5, 4)
+        self.__change_xp_gold(4, 5, 3)
         self.__save_file('npc_units.txt')
 
         self.__read_file('neutral_items.txt')
@@ -54,8 +54,20 @@ class Changer:
 
         self.cache = ls2
 
-    def __change_xp_gold(self, k, k2):
+    def __change_xp_gold(self, k1, k2, k3):
         ls2 = []
+        bad = [
+            # BountyXP, BountyGoldMin, BountyGoldMax
+            276, 277, 278,  # npc_dota_creep_badguys_ranged
+            367, 368, 369,  # npc_dota_creep_badguys_ranged_upgraded
+            458, 459, 460,  # npc_dota_creep_badguys_ranged_upgraded_mega
+            822, 823, 824,  # npc_dota_creep_badguys_melee
+            913, 914, 915,  # npc_dota_creep_badguys_flagbearer
+            1004, 1004, 1006,  # npc_dota_creep_badguys_melee_upgraded
+            1095, 1096, 1097,  # npc_dota_creep_badguys_flagbearer_upgraded
+            1185, 1186, 1187,  # npc_dota_creep_badguys_melee_upgraded_mega
+            1275, 1276, 1277,  # npc_dota_creep_badguys_flagbearer_upgraded_mega
+        ]
         good = [
             # BountyXP, BountyGoldMin, BountyGoldMax
             549, 550, 551,  # npc_dota_creep_goodguys_ranged
@@ -69,15 +81,21 @@ class Changer:
             1817, 1818, 1819,  # npc_dota_creep_goodguys_flagbearer_upgraded_mega
         ]
         for x, i in enumerate(self.cache, 1):
-            if x in good:
+            if x in bad:
                 i = i.split('"')
-                i[3] = str(int(i[3]) * k)
+                i[3] = str(int(int(i[3]) * k1))
                 j = '"'.join(i)
                 ls2.append(j)
-                print(x, j, end='')
+                print('bad->', x, j, end='')
+            elif x in good:
+                i = i.split('"')
+                i[3] = str(int(int(i[3]) * k2))
+                j = '"'.join(i)
+                ls2.append(j)
+                print('good->', x, j, end='')
             elif 'BountyXP' in i or 'BountyGoldMin' in i or 'BountyGoldMax' in i:
                 i = i.split('"')
-                i[3] = str(int(i[3]) * k2)
+                i[3] = str(int(int(i[3]) * k3))
                 j = '"'.join(i)
                 ls2.append(j)
                 print(x, j, end='')
