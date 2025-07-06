@@ -7,7 +7,7 @@ class Changer:
     def change(self):
         self.__read_file('npc_units.txt')
         # self.__change_tower_hp(2)
-        self.__change_xp_gold(4)
+        self.__change_xp_gold(5, 4)
         self.__save_file('npc_units.txt')
 
         self.__read_file('neutral_items.txt')
@@ -54,40 +54,58 @@ class Changer:
 
         self.cache = ls2
 
-    def __change_xp_gold(self, mul):
+    def __change_xp_gold(self, k, k2):
         ls2 = []
-        for i in self.cache:
-            if 'BountyXP' in i or 'BountyGoldMin' in i or 'BountyGoldMax' in i:
+        good = [
+            # BountyXP, BountyGoldMin, BountyGoldMax
+            549, 550, 551,  # npc_dota_creep_goodguys_ranged
+            640, 641, 642,  # npc_dota_creep_goodguys_ranged_upgraded
+            731, 732, 733,  # npc_dota_creep_goodguys_ranged_upgraded_mega
+            1365, 1366, 1367,  # npc_dota_creep_goodguys_melee
+            1456, 1457, 1458,  # npc_dota_creep_goodguys_flagbearer
+            1547, 1548, 1549,  # npc_dota_creep_goodguys_melee_upgraded
+            1637, 1638, 1639,  # npc_dota_creep_goodguys_flagbearer_upgraded
+            1727, 1728, 1729,  # npc_dota_creep_goodguys_melee_upgraded_mega
+            1817, 1818, 1819,  # npc_dota_creep_goodguys_flagbearer_upgraded_mega
+        ]
+        for x, i in enumerate(self.cache, 1):
+            if x in good:
                 i = i.split('"')
-                i[3] = str(int(i[3]) * mul)
+                i[3] = str(int(i[3]) * k)
                 j = '"'.join(i)
                 ls2.append(j)
-                print(j, end='')
+                print(x, j, end='')
+            elif 'BountyXP' in i or 'BountyGoldMin' in i or 'BountyGoldMax' in i:
+                i = i.split('"')
+                i[3] = str(int(i[3]) * k2)
+                j = '"'.join(i)
+                ls2.append(j)
+                print(x, j, end='')
             else:
                 ls2.append(i)
         self.cache = ls2
 
     def __change_neutral_items(self):
         ls2 = []
-        for i in self.cache:
+        for x, i in enumerate(self.cache, 1):
             if '"70:00"' in i:
                 i = i.replace('"70:00"', '"25:00"')
-                print(i)
+                print(x, i, end='')
             elif '"5:00"' in i:
                 i = i.replace('"5:00"', '"0:00"')
-                print(i)
+                print(x, i, end='')
             elif '"15:00"' in i:
                 i = i.replace('"15:00"', '"5:00"')
-                print(i)
+                print(x, i, end='')
             elif '"25:00"' in i:
                 i = i.replace('"25:00"', '"10:00"')
-                print(i)
+                print(x, i, end='')
             elif '"35:00"' in i:
                 i = i.replace('"35:00"', '"15:00"')
-                print(i)
+                print(x, i, end='')
             elif '"60:00"' in i:
                 i = i.replace('"60:00"', '"20:00"')
-                print(i)
+                print(x, i, end='')
             else:
                 i = i
             ls2.append(i)
@@ -96,14 +114,14 @@ class Changer:
     def __change_items(self):
         # Hand of Midas
         ls2 = []
-        for i, x in enumerate(self.cache):
-            if i  == 3574:
-                x = x.replace('2.1', '5')
-                print(x)
-            elif i == 3575:
-                x = x.replace('160', '1000')
-                print(x)
-            ls2.append(x)
+        for x, i in enumerate(self.cache, 1):
+            if x == 3574:
+                i = i.replace('2.1', '5')
+                print(x, i, end='')
+            elif x == 3575:
+                i = i.replace('160', '1000')
+                print(x, i, end='')
+            ls2.append(i)
         self.cache = ls2
 
 
